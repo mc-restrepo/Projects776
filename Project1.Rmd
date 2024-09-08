@@ -7,9 +7,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(usethis)
 
+library(usethis)
 library("tidyverse")
+
 library(remotes)
   if (!require("tidytuesdayR", quietly = TRUE)) {
     remotes::install_github("dslc-io/tidytuesdayR")
@@ -17,6 +18,7 @@ library(remotes)
 
 library("tidytuesdayR")  
 library("here")
+
 ```
 
 ## Setup
@@ -51,7 +53,51 @@ https://github.com/rfordatascience/tidytuesday/blob/master/data/2022/2022-01-18/
 
 ## Part 1: Explore Data
 
+In this part, use functions from dplyr and ggplot2 to answer the following questions.
+
+1.  Make a histogram of the `rating` scores to visualize the overall distribution of scores. Change the number of bins from the default to 10, 15, 20, and 25. Pick on the one that you think looks the best. Explain what the difference is when you change the number of bins and explain why you picked the one you did.
+
+```{r}
+#install.packages("esquisse")
+#library(esquisse)
+#esquisser(chocolate)
+
+#ggplot(chocolate) +
+#  aes(x = rating) +
+#  geom_histogram(bins = 30L, fill = "#112446") +
+#  theme_minimal()
+
+ggplot(chocolate) +
+ aes(x = rating) +
+ geom_histogram(bins = 10)
+
+ggplot(chocolate) +
+ aes(x = rating) +
+ geom_histogram(bins = 15)
+
+ggplot(chocolate) +
+ aes(x = rating) +
+ geom_histogram(bins = 20)
+
+ggplot(chocolate) +
+ aes(x = rating) +
+ geom_histogram(bins = 25)
+
+```
+  
+Specifying the number of bins in the geom_histogram function controls the number of bins in the histogram. I would choose the histograms with 15 bins because the values are not continuous, making it unnecessary to divide into more bins.
+
+2.  Consider the countries where the beans originated from. How many reviews come from each country of bean origin?
+
+```{r}
+chocolate %>%
+  group_by(country_of_bean_origin) %>%
+  summarize(count = n())
+```
+3.  What is average `rating` scores from reviews of chocolate bars that have Ecuador as `country_of_bean_origin` in this dataset? For this same set of reviews, also calculate (1) the total number of reviews and (2) the standard deviation of the `rating` scores. Your answer should be a new data frame with these three summary statistics in three columns. Label the name of these columns `mean`, `sd`, and `total`.
+
 ```{r}
 
+  
 ```
 
