@@ -1,0 +1,57 @@
+---
+title: "Project 1"
+author: "Maria Camila Restrepo"
+date: "2024-09-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(usethis)
+
+library("tidyverse")
+library(remotes)
+  if (!require("tidytuesdayR", quietly = TRUE)) {
+    remotes::install_github("dslc-io/tidytuesdayR")
+  }
+
+library("tidytuesdayR")  
+library("here")
+```
+
+## Setup
+```{r}
+
+# tests if a directory named "data" exists locally
+if (!dir.exists(here("data"))) {
+    dir.create(here("data"))
+}
+
+# saves data only once (not each time you knit a R Markdown)
+if (!file.exists(here("data", "chocolate.RDS"))) {
+    url_csv <- "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-18/chocolate.csv"
+    chocolate <- readr::read_csv(url_csv)
+
+    # save the file to RDS objects
+    saveRDS(chocolate, file = here("data", "chocolate.RDS"))
+}
+
+chocolate <- readRDS(here("data", "chocolate.RDS"))
+
+as_tibble(chocolate)
+glimpse(chocolate)
+```
+Here is a data dictionary for what all the column names mean:
+
+https://github.com/rfordatascience/tidytuesday/blob/master/data/2022/2022-01-18/readme.md#data-dictionary
+
+Here is a data dictionary for what all the column names mean:
+
+https://github.com/rfordatascience/tidytuesday/blob/master/data/2022/2022-01-18/readme.md#data-dictionary
+
+## Part 1: Explore Data
+
+```{r}
+
+```
+
