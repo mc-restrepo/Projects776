@@ -427,8 +427,129 @@ ing_char$feature <- factor(ing_char$feature,
 ggplot(ing_char, aes(x = review_date, y = meanscore)) +
   geom_point() +
   facet_wrap( ~ feature, ncol = 3) +
-  geom_smooth() +
-  ggtitle("Trends in Chocolate Characteristics and Ingredients") +
-  theme(plot.title = element_text(hjust = 0.5))
+  geom_smooth(color = "darkgoldenrod4") +
+  ggtitle("Trends in Chocolate Characteristics and Ingredients", "Mean proportion of yearly ingredients and characteristics in chocolate reviews") +
+  labs(x = "Review date (years)", 
+       y = "Mean proportion", 
+       caption = "Maria Camila Restrepo Ceron, 2024") +
+  theme(plot.title = element_text(face = "bold")) + 
+  theme_light()
+
+apropos("theme_") #to look up the existing themes
+```
+# Part 5: Make the worst plot you can!
+
+This sounds a bit crazy I know, but I want this to try and be FUN! Instead of trying to make a "good" plot, I want you to explore your creative side and make a really awful data visualization in every way. :)
+
+### Tasks
+
+Using the `chocolate` dataset (or any of the modified versions you made throughout this assignment or anything else you wish you build upon it):
+
+1.  Make the absolute worst plot that you can. You need to customize it in **at least 7 ways** to make it awful.
+
+```{r}
+
+choco_10reviews <- choco_10reviews %>%
+  mutate( colombia = 
+    case_when(country_of_bean_origin == "Colombia" ~ 1, TRUE ~ 0)
+  )
+
+choco_10reviews <- choco_10reviews %>%
+  mutate(colombia = factor(colombia, 
+                           levels = c(1, 0), 
+                           labels = c("Colombia! <3", "Not Colombia X")))
+str(choco_10reviews$colombia)
+
+choco_10reviews %>%
+  group_by(colombia) %>%
+  summarise(count = n())
+
+#Add an image to the background
+library(grid)
+#install.packages("png")
+library(png)
+img <- rasterGrob(readPNG("sombrero-vueltiao.png"), width = unit(1, "npc"), height = unit(1, "npc"))
+
+
+ggplot(choco_10reviews, aes(x = colombia, y = rating)) +
+  annotation_custom(img, xmin = -Inf, xmax = Inf, ymin = 1.40, ymax = 3.60) + 
+  geom_boxplot(color = "blue") +  
+  ggtitle("Colombian chocolate is as good as our coffee") +
+  labs(x = "Cacao bean origin", y = "Rating", caption = "Que viva Shakira y Sofia Vergara") +
+  theme(
+    plot.background = element_rect(fill = "yellow", color = NA),
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.title = element_text(size = 20, color = "blue", hjust = 0.5),
+    axis.title.x = element_text(size = 16, color = "red", face = "italic"),
+    axis.title.y = element_text(size = 16, color = "red", face = "italic"),
+    axis.text.x = element_text(size = 14),  
+    axis.text.y = element_text(size = 14)   
+  )
+
+```
+
+2.  In your document, write 1 - 2 sentences about each different customization you added (using bullets -- i.e. there should be at least 7 bullet points each with 1-2 sentences), and how it could be useful for you when you want to make an awesome data visualization.
+
+- Background picture: through the png and grid package, I added a picture to the background, customizing the size and location according to the x and y axis.  
+- Boxplot: to match the "colombia" theme, I changed the color of the boxplots to blue.  
+- Title: I added a title, increased the font size, and changed the color to blue.  
+- Axis labels: I changed the axis labels, increased the font size, changed the color to red, and italicized them.  
+- Caption: I added a caption to the graph.  
+- Background color: I changed the background color to yellow to fit the theme.  
+- Panel background: In order for the background picture to show, I had to change the panel background to transparent.  
+- Axis text: I increased the font size of the x and y axis.  
+
+
+# Part 6: Make my plot a better plot!
+
+The goal is to take my sad looking plot and make it better! If you'd like an [example](https://twitter.com/drmowinckels/status/1392136510468763652), here is a tweet I came across of someone who gave a talk about how to zhoosh up your ggplots.
+
+```{r}
+chocolate %>%
+    ggplot(aes(
+        x = as.factor(review_date),
+        y = rating,
+        fill = review_date
+    )) +
+    geom_violin()
+  
+```
+
+### Tasks
+
+1.  You need to customize it in **at least 7 ways** to make it better.
+
+```{r}
+chocolate %>%
+    ggplot(aes(
+        x = as.factor(review_date),
+        y = rating,
+    )) +
+    geom_violin(color = "chocolate4", fill = "chocolate3") +
+  ggtitle("Yearly rating scores of chocolate bars", "Of worldwide chocolate reviews") +
+  labs(x = "Date of review (years)", y = "Rating") +
+  theme(plot.background = element_rect(fill = "mistyrose", color = NA),
+        plot.title = element_text(size = 14, face = "bold"),
+        plot.subtitle = element_text(face = "italic", margin = margin(b = 15)),
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
+        )
+```
+
+2.  In your document, write 1 - 2 sentences about each different customization you added (using bullets -- i.e. there should be at least 7 bullet points each with 1-2 sentences), describing how you improved it.  
+
+- Remove review_date fill: filling the violin graph according to the review date was redundant and not adding new information to the graph, so I removed it.  
+- Add color to the violin graph: I made both the lines and the fill of the violin graph chocolate color to match the theme.  
+- Title: I added a title, increased the font size, and made it bold.  
+- Subtitle: I added a subtitle, italicized it, and added a margin between the subtitle and the panel.  
+- Axis labels: I changed the axis labels.  
+- Plot background: I changed the background color to a light pink.  
+- Plot margin: I added plot margins for a more spacious graph.  
+
+ 
+# R session information
+
+```{r}
+options(width = 120)
+sessioninfo::session_info()
 ```
 

@@ -1,0 +1,152 @@
+---
+title: "Project 2"
+author: "Maria Camila Restrepo"
+date: "2024-09-20"
+output: html_document
+---
+
+```{r setup}
+library(tidyverse)
+library(here)
+```
+
+# Part 1: Fun with functions
+
+### Part 1A: Exponential transformation
+
+The exponential of a number can be written as an infinite series expansion of the form $$
+\exp(x) = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots
+$$ Of course, we cannot compute an infinite series by the end of this term and so we must truncate it at a certain point in the series. The truncated sum of terms represents an approximation to the true exponential, but the approximation may be usable.
+
+Write a function that computes the exponential of a number using the truncated series expansion. The function should take two arguments:
+
+-   `x`: the number to be exponentiated
+
+-   `k`: the number of terms to be used in the series expansion beyond the constant 1. The value of `k` is always $\geq 1$.
+
+For example, if $k = 1$, then the `Exp` function should return the number $1 + x$. If $k = 2$, then you should return the number $1 + x + x^2/2!$.
+
+Include at least one example of output using your function.
+
+```{r}
+
+trunc_exp <- function(x, k) {
+  
+  result <- 1 # Initialize the result with the constant 1 (the 0th term)
+  
+  # Loop through terms from 1 to k to compute the series sum
+  for (i in 1:k) {
+        result <- result + (x^i) / factorial(i)
+  }
+  
+  return(result)
+}
+```
+
+Result:
+
+```{r}
+trunc_exp(2, 50) 
+```
+
+### Part 1B: Sample mean and sample standard deviation
+
+Next, write two functions called `sample_mean()` and `sample_sd()` that takes as input a vector of data of length $N$ and calculates the sample average and sample standard deviation for the set of $N$ observations.
+
+```{r}
+sample_mean <- function(x) {
+  return(sum(x) / length(x))
+}
+
+sample_sd <- function(x) {
+  mean <- sample_mean(x)
+  accumulator <- 0 #need to start with the 0th term for the sum
+  for (i in x) { #i is the index (each number position inside the vector)
+    accumulator <- accumulator + (i - mean)^2
+  }
+  result <- sqrt ( accumulator / (length(x) - 1) )
+  return(result)
+}
+```
+
+Result:
+
+```{r}
+vec <- c(1:10)
+sample_mean(vec)
+sample_sd(vec)
+sd(vec) #checking the result
+```
+
+# Part 2: Wrangling data  
+
+```{r, message=FALSE}
+library(here)
+if (!file.exists(here("data", "tuesdata_rainfall.RDS"))) {
+    tuesdata <- tidytuesdayR::tt_load("2020-01-07")
+    rainfall <- tuesdata$rainfall
+    temperature <- tuesdata$temperature
+
+    # save the files to RDS objects
+    saveRDS(tuesdata$rainfall, file = here("data", "tuesdata_rainfall.RDS"))
+    saveRDS(tuesdata$temperature, file = here("data", "tuesdata_temperature.RDS"))
+}
+```
+Let's load the datasets
+
+```{r, eval=TRUE, message=FALSE}
+rainfall <- readRDS(here("data", "tuesdata_rainfall.RDS"))
+temperature <- readRDS(here("data", "tuesdata_temperature.RDS"))
+```
+
+Now we can look at the data with `glimpse()`
+
+```{r,message=FALSE}
+
+glimpse(rainfall)
+glimpse(temperature)
+```
+
+this dataset contains temperature and rainfall data from Australia.
+
+Here is a data dictionary for what all the column names mean:
+
+-   <https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-07/readme.md#data-dictionary>
+
+### Tasks
+
+Using the `rainfall` and `temperature` data, perform the following steps and create a new data frame called `df`:
+
+1.  Start with `rainfall` dataset and drop any rows with NAs.
+```{r}
+nona_rainfall <- rainfall %>%
+  drop_na()
+#now its 64,476 obs
+```
+
+2.  Create a new column titled `date` that combines the columns `year`, `month`, `day` into one column separated by "-". (e.g. "2020-01-01"). This column should not be a character, but should be recognized as a date. (**Hint**: check out the `ymd()` function in `lubridate` R package). You will also want to add a column that just keeps the `year`.
+
+```{r}
+library(lubridate)
+library(dplyr)
+library(stringr)
+
+rainfall1 <- nona_rainfall %>%
+  mutate(date_str = str_c(year, month, day, sep = "-")) %>%
+  mutate(date = ymd(date_str)) %>%
+  select(-date_str, -month, -day)
+
+glimpse(rainfall1)
+```
+
+
+3.  Using the `city_name` column, convert the city names (character strings) to all upper case.
+4.  Join this wrangled rainfall dataset with the `temperature` dataset such that it includes only observations that are in both data frames. (**Hint**: there are two keys that you will need to join the two datasets together). (**Hint**: If all has gone well thus far, you should have a dataset with 83,964 rows and 13 columns).
+
+::: callout-note
+-   You may need to use functions outside these packages to obtain this result, in particular you may find the functions `drop_na()` from `tidyr` and `str_to_upper()` function from `stringr` useful.
+:::
+
+```{r}
+# Add your solution here
+```
